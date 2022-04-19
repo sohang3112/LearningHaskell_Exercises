@@ -38,7 +38,8 @@ split :: [a] -> ([a],[a])
 split xs =
   let
     half = length xs `div` 2
-    split' xs (y:ys) n = error "TODO implement split'"
+    split' xs ys 0 = (xs, ys)
+    split' xs (y:ys) n = let (p,q) = split' (y:xs) ys (n-1) 
     split' xs [] n = (xs,[])
    in split' [] xs half
 
@@ -49,7 +50,12 @@ split xs =
 -- them together in to a sorted list
 -----------------------------------------------------------------------------------------------------------
 merge :: (Ord a) => [a] -> [a] -> [a]
-merge xs ys = error "TODO implement merge"
+merge [] ys = ys 
+merge xs [] = xs 
+merge a@(x:xs) b@(y:ys) = case compare x y of 
+  EQ -> x : y : merge xs ys 
+  LT -> x : merge xs b 
+  GT -> y : merge a ys
 
 -- Exercise C
 -----------------------------------------------------------------------------------------------------------
@@ -58,7 +64,9 @@ merge xs ys = error "TODO implement merge"
 -- NOTE singleton and empty lists are already sorted
 -----------------------------------------------------------------------------------------------------------
 mergeSort :: (Ord a) => [a] -> [a]
-mergeSort xs = error "TODO implement mergeSort"
+mergeSort [] = []
+mergeSort [x] = [x]
+mergeSort (x:xs) = mergeSort (filter (<= x) xs) ++ x : mergeSort (filter (> x) xs)
 
 -- Exercise D
 -----------------------------------------------------------------------------------------------------------
@@ -67,7 +75,7 @@ mergeSort xs = error "TODO implement mergeSort"
 --      quickCheck (sortProp . mergeSort)
 -----------------------------------------------------------------------------------------------------------
 sortProp :: (Ord a) => [a] -> Bool
-sortProp xs = error "TODO implement sortProp"
+sortProp xs = and $ zipWith (<=) xs (tail xs)
 
 -- Exercise E
 -----------------------------------------------------------------------------------------------------------
@@ -75,7 +83,7 @@ sortProp xs = error "TODO implement sortProp"
 -- replicates that element n times
 -----------------------------------------------------------------------------------------------------------
 replicate :: Int -> a -> [a]
-replicate n x = error "TODO implement replicate"
+replicate n x = take n $ repeat x
 
 -- Exercise F
 -----------------------------------------------------------------------------------------------------------
@@ -83,7 +91,9 @@ replicate n x = error "TODO implement replicate"
 -- NOTE throw an error when indexing out of bounds
 -----------------------------------------------------------------------------------------------------------
 (!!) :: [a] -> Int -> a
-(!!) xs n = error "TODO implement !!"
+(!!) [] _ = error "Index out of bounds"
+(!!) _ n | n < 0 = error "Index out of bounds"
+(!!) (x:xs) n = xs !! (n-1)
 
 -- Exercise G
 -----------------------------------------------------------------------------------------------------------
@@ -91,4 +101,4 @@ replicate n x = error "TODO implement replicate"
 -- is an element of the list
 -----------------------------------------------------------------------------------------------------------
 elem :: (Eq a) => a -> [a] -> Bool
-elem e xs = error "TODO implement elem"
+elem e = any (== e)
