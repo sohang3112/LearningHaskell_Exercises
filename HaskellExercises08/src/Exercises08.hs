@@ -47,40 +47,46 @@ instance Num (Signed Nat) where
 -- Implement the functions sNatToInt and intToSNat which converts a Signed Nat to an Int and vice versa
 -- NOTE these two functions will be tested together
 -----------------------------------------------------------------------------------------------------------
+natToInt :: Nat -> Int 
+natToInt Zero = 0
+natToInt (Succ x) = 1 + natToInt x
+
+-- WARNING: negative input will cause infinite loop
+intToNat :: Int -> Nat 
+intToNat 0 = Zero
+intToNat n = Succ $ intToNat (n-1)
+
 sNatToInt :: Signed Nat -> Integer
-sNatToInt (Positive n) = error "TODO: implement sNatToInt"
-sNatToInt (Negative n) = error "TODO: implement sNatToInt"
+sNatToInt (Positive n) = natToInt n
+sNatToInt (Negative n) = - natToInt n
 
 intToSNat :: Integer -> Signed Nat
-intToSNat n
-  | n == 0     = error "TODO: implement intToSNat"
-  | n < 0      = error "TODO: implement intToSNat"
-  | otherwise  = error "TODO: implement intToSNat"
-  where
-    unwrapSign :: Signed Nat -> Nat
-    unwrapSign (Positive n) = n
-    unwrapSign (Negative n) = n
+intToSNat n 
+  | n >= 0    = Positive $ intToNat n 
+  | otherwise = Negative $ intToNat n
 
 -- Exercise B
 -----------------------------------------------------------------------------------------------------------
 -- Implement the function addSNat which will add two signed natural numbers
 -- DO NOT USE sNatToInt and intToSNat (which would be incredibly inefficient)
 -----------------------------------------------------------------------------------------------------------
+addNat :: Nat -> Nat -> Nat
+addNat (Succ n) m = addNat n (Succ m)
+addNat Zero m     =  m
+
+multNat :: Nat -> Nat -> Nat 
+multNat (Succ n) m = addNat m (multNat n m)
+multNat Zero m     = Zero
+
 addSNat :: Signed Nat -> Signed Nat -> Signed Nat
-addSNat (Positive x) (Positive y) =
-  case (x,y) of
-    (Succ n,m) -> error "TODO: implement addSNat"
-    (Zero,m) -> error "TODO: implement addSNat"
+addSNat (Positive x) (Positive y) = Positive $ addNat x y
 addSNat (Positive x) (Negative y) =
   case (x,y) of
-    (Succ n,Succ m) -> error "TODO: implement addSNat"
-    (Succ n,Zero)   -> error "TODO: implement addSNat"
-    (Zero,m)        -> error "TODO: implement addSNat"
-addSNat (Negative x) (Positive y) = error "TODO: implement addSNat"
-addSNat (Negative x) (Negative y) =
-  case (x,y) of
-    (Succ n,m) -> error "TODO: implement addSNat"
-    (Zero,m)   -> error "TODO: implement addSNat"
+    (Succ n,Succ m) -> addSNat (Positive n) (Negative m)
+    (Succ n,Zero)   -> Positive n
+    (Zero,m)        -> Negative m
+addSNat (Negative x) (Positive y) = addSNat (Positive x) (Negative y)
+addSNat (Negative x) (Negative y) = Negative $ addSNat x y
 
 -- Exercise C
 -----------------------------------------------------------------------------------------------------------
@@ -88,27 +94,22 @@ addSNat (Negative x) (Negative y) =
 -- NOTE first define functions addNat and multNat :: Nat -> Nat -> Nat
 -----------------------------------------------------------------------------------------------------------
 multSNat :: Signed Nat -> Signed Nat -> Signed Nat
-multSNat n0 n1 =
-  let
-    addNat (Succ n) m = addNat n (Succ m)
-    addNat Zero m     =  m
-
-    multNat (Succ n) m = addNat m (multNat n m)
-    multNat Zero m     = Zero
-  in case (n0,n1) of
-       (Positive x, Positive y) -> error "TODO: implement multSNat"
-       (Negative x, Negative y) -> error "TODO: implement multSNat"
-       (Negative x, Positive y) -> error "TODO: implement multSNat"
-       (Positive x, Negative y) -> error "TODO: implement multSNat"
+multSNat n0 n1 = case (n0,n1) of
+  (Positive x, Positive y) -> Positive $ multNat x y
+  (Negative x, Negative y) -> Positive $ multNat x y
+  (Negative x, Positive y) -> Negative $ multNat x y
+  (Positive x, Negative y) -> Negative $ multNat x y
 
 -- Exercise D
 -----------------------------------------------------------------------------------------------------------
 -- Implement the function absSNat that returns the absolute value of a signed number
 -----------------------------------------------------------------------------------------------------------
-absSNat n = error "TODO: implement absSNat"
+absSNat (Positive n) = Positive n 
+absSNat (Negative n) = Positive n
 
 -- Exercise E
 -----------------------------------------------------------------------------------------------------------
 -- Implement the function negateSNat that returns the negation (i.e. flips the sign) of a signed number
 -----------------------------------------------------------------------------------------------------------
-negateSNat n = error "TODO: implement negateSNat"
+negateSNat (Positive x) = Negative x 
+negateSNat (Negative x) = Positive x
