@@ -11,6 +11,7 @@ Description:
 -}
 module Exercises01 where
 
+import Data.List (foldl')
 import Prelude hiding (last,init,(!!))
 
 -----------------------------------------------------------------------------------------------------------
@@ -23,7 +24,7 @@ import Prelude hiding (last,init,(!!))
 --    SUBMITTING, FAILURE TO DO SO WILL RESULT IN A MARK OF 0
 -- 4) REPLACE macid = "TODO" WITH YOUR ACTUAL MACID (EX. IF YOUR MACID IS jim THEN macid = "jim")
 -----------------------------------------------------------------------------------------------------------
-macid = "TODO"
+macid = "sohang"
 
 -- NOTE: THE PRELUDE FUNCTIONS YOU'RE REQUIRED TO IMPLEMENT HAVE BEEN REMOVED, HOWEVER OTHER PRELUDE
 --       FUNCTIONS ARE STILL AVAILABLE, E.I. drop,take,reverse,head,tail,length,div
@@ -35,15 +36,18 @@ macid = "TODO"
 -- other available Prelude functions
 -----------------------------------------------------------------------------------------------------------
 last :: [a] -> a
-last xs = error "TODO implement init"
+last = foldl1' (flip const)
 
 -- Exercise B
 -----------------------------------------------------------------------------------------------------------
 -- Implement the Prelude function init (which returns a list with the last element removed) using a
 -- combination of other available Prelude functions
 -----------------------------------------------------------------------------------------------------------
+
+-- TODO: can this be done using foldr or foldr1?
 init :: [a] -> [a]
-init xs = error "TODO implement init"
+init [x] = []
+init (x:xs) = x : init xs
 
 -- Exercise C
 -----------------------------------------------------------------------------------------------------------
@@ -56,7 +60,10 @@ init xs = error "TODO implement init"
 -- xs !! 4 == ERROR
 -----------------------------------------------------------------------------------------------------------
 (!!) :: [a] -> Int -> a
-xs !! n = error "TODO implement !!"
+[] !! _ = error "Index out of bounds"
+_ !! n | n < 0 = error "Negative index not allowed"
+(x:_) !! 0 = x 
+(_:xs) !! n = xs !! (n-1)
 
 -- Exercise D
 -----------------------------------------------------------------------------------------------------------
@@ -65,10 +72,10 @@ xs !! n = error "TODO implement !!"
 -- HINT: use the `div` function instead of / to do integer division when dividing the length of the list
 --       by 2, then take or drop those amount of elements from the list
 firstHalf :: [a] -> [a]
-firstHalf xs = error "TODO implement firstHalf"
+firstHalf xs = take (length xs `div` 2) xs
 
 lastHalf :: [a] -> [a]
-lastHalf xs = error "TODO implement lastHalf"
+lastHalf xs = drop (length xs `div` 2) xs
 
 -- Exercise E
 -----------------------------------------------------------------------------------------------------------
@@ -79,15 +86,16 @@ lastHalf xs = error "TODO implement lastHalf"
 --   inners [1,2]     == []
 --   inners [1,2,3,4] == [2,3]
 inners :: [a] -> [a]
-inners [] = []
-inners xs = error "TODO implement inners"
+inners = tail . init
 
 -- Exercise F
 -----------------------------------------------------------------------------------------------------------
 -- Implement a function that computes the Euclidean distance in 2 dimensions of two points p and q
 -- See https://en.wikipedia.org/wiki/Euclidean_distance for details
 distance :: (Float,Float) -> (Float,Float) -> Float
-distance (p1,p2) (q1,q2) = error "TODO implement distance"
+distance (p1,p2) (q1,q2) = sqrt (dx*dx + dy*dy)
+  where dx = p1 - p2 
+        dy = q1 - q2
 
 -- Exercise F
 -----------------------------------------------------------------------------------------------------------
@@ -96,4 +104,4 @@ distance (p1,p2) (q1,q2) = error "TODO implement distance"
 -- NOTE: you have to use the ** operator instead of ^ when using floating point numbers for powers
 --       you'll also need fromIntegral to convert from integers to a floating point
 nthRoot :: Float -> Int -> Float
-nthRoot x n = error "TODO implement nthRoot"
+nthRoot x n = x ** (1 / fromIntegral n)
