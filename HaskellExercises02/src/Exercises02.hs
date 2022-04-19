@@ -36,28 +36,32 @@ macid = "TODO"
 --      the type decleration
 -----------------------------------------------------------------------------------------------------------
 (||) :: Bool -> Bool -> Bool
-x || y = error "TODO implement ||"
+False || False = False 
+_ || _ = True
 
 -- Exercise B
 -----------------------------------------------------------------------------------------------------------
 -- Implement Logical conjunction (AND) using pattern matching
 -----------------------------------------------------------------------------------------------------------
 (&&) :: Bool -> Bool -> Bool
-x && y = error "TODO implement &&"
+True && True = True 
+_ && _ = False
 
 -- Exercise C
 -----------------------------------------------------------------------------------------------------------
 -- Implement Logical implication using pattern matching
 -----------------------------------------------------------------------------------------------------------
 (==>) :: Bool -> Bool -> Bool
-x ==> y = error "TODO implement ==>"
+True => False = False 
+_ => _ = True
 
 -- Exercise D
 -----------------------------------------------------------------------------------------------------------
 -- Implement the function abs that returns the absolute value of a number
 -----------------------------------------------------------------------------------------------------------
 abs :: (Num a,Ord a) => a -> a
-abs x = error "TODO implement abs"
+abs x | x < 0 = -x 
+abs x = x
 
 -- Exercise E
 -----------------------------------------------------------------------------------------------------------
@@ -68,14 +72,15 @@ abs x = error "TODO implement abs"
 --        HOWEVER, you'll need to adjust the tolerance to suit different contexts
 -----------------------------------------------------------------------------------------------------------
 (=.) :: (Floating a,Ord a) => a -> a -> Bool
-x =. y = error "TODO implement =."
+x =. y = abs (x - y) <= 1e-4
 
 -- Exercise F
 -----------------------------------------------------------------------------------------------------------
 -- Implement a function stack that takes the first element of a list and moves it to the back
 -----------------------------------------------------------------------------------------------------------
 stack :: [a] -> [a]
-stack xs = error "TODO implement stack"
+stack [] = []
+stack (x:xs) = xs ++ [x]
 
 -- Exercise G
 -----------------------------------------------------------------------------------------------------------
@@ -84,4 +89,4 @@ stack xs = error "TODO implement stack"
 -- NOTE use the map function combined with a lambda expression to do the division
 -----------------------------------------------------------------------------------------------------------
 halves :: Integral a => [a] -> [a]
-halves xs = error "TODO implement halves"
+halves = map (`div` 2)
