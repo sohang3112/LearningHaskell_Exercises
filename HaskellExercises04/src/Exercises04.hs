@@ -33,7 +33,9 @@ macid = "TODO"
 -- NOTE zip short circuits on the shortest list
 -----------------------------------------------------------------------------------------------------------
 zip :: [a] -> [b] -> [(a,b)]
-zip xs ys = error "TODO implement zip"
+zip [] _ = []
+zip _ [] = []
+zip (x:xs) (y:ys) = (x,y) : zip xs ys
 
 -- Exercise B
 -----------------------------------------------------------------------------------------------------------
@@ -44,7 +46,7 @@ zip xs ys = error "TODO implement zip"
 -- NOTE zip [0..] xs   creates a list of (index,element) tuples
 -----------------------------------------------------------------------------------------------------------
 mapWithIndex :: ((Int,a) -> b) -> [a] -> [b]
-mapWithIndex f xs = error "TODO implement mapWithIndex"
+mapWithIndex f = map f . zip [0..]
 
 -- Exercise C
 -----------------------------------------------------------------------------------------------------------
@@ -56,7 +58,9 @@ data List a = Cons a (List a)
   deriving (Show,Eq)
 
 mySum :: (Num a) => List a -> a
-mySum xs       = error "TODO implement mySum"
+mySum = go 0
+  where go acc Nil =  acc 
+        go acc (Cons !x xs) = go (x + acc) xs 
 
 -- Exercise D
 -----------------------------------------------------------------------------------------------------------
@@ -64,7 +68,9 @@ mySum xs       = error "TODO implement mySum"
 -- (i.e. concatenates them), but works on the above custom List data type instead
 -----------------------------------------------------------------------------------------------------------
 (+++) :: List a -> List a -> List a
-xs +++ ys = error "TODO implement +++"
+Nil +++ ys = ys 
+xs +++ Nil = xs 
+(Cons x xs) +++ ys = Cons x (xs +++ ys)
 
 -- Exercise E
 -----------------------------------------------------------------------------------------------------------
@@ -72,7 +78,9 @@ xs +++ ys = error "TODO implement +++"
 -- order of all elements in a list, but works on the above custom List data type instead
 -----------------------------------------------------------------------------------------------------------
 myReverse :: List a -> List a
-myReverse xs  = error "TODO implement myReverse"
+myReverse = go Nil 
+  where go acc Nil = acc 
+        go acc (Cons x xs) = go (Cons x acc) xs
 
 -- Exercise F
 -----------------------------------------------------------------------------------------------------------
@@ -83,8 +91,10 @@ data Tree a = Node a (Tree a) (Tree a)
             | Empty
   deriving (Show,Eq)
 
+-- TODO: fix this so it doesn't stack overflow for trees with large depth
 treeSum :: Num a => Tree a -> a
-treeSum tree = error "TODO implement treeSum"
+treeSum Empty = 0
+treeSum (Node x l r) = x + treeSum l + treeSum r 
 
 
 -- Exercise G
@@ -100,17 +110,22 @@ treeSum tree = error "TODO implement treeSum"
 -- NOTE the Empty Tree is of height 0
 -----------------------------------------------------------------------------------------------------------
 treeHeight :: Tree a -> Int
-treeHeight tree = error "TODO implement treeHeight"
+treeHeight Empty = 0
+treeHeight (Node _ l r) = 1 + max (treeHeight l) (treeHeight r)
 
 -- Exercise H
 -----------------------------------------------------------------------------------------------------------
 -- Implement the Prelude functions take and drop that take / drop the first n elements of a list
 -----------------------------------------------------------------------------------------------------------
 take :: Int -> [a] -> [a]
-take n xs = error "TODO implement take"
+take 0 _  = []
+take _ [] = []
+take n (x:xs) = x : take (n-1) xs
 
 drop :: Int -> [a] -> [a]
-drop n xs = error "TODO implement drop"
+drop 0 xs = xs 
+drop _ [] = []
+drop n (_:xs) = drop (n-1) xs
 
 -- Extra Challenge
 -----------------------------------------------------------------------------------------------------------
