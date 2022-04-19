@@ -49,7 +49,7 @@ data Tree a = Node a (Tree a) (Tree a)
    deriving (Show,Eq)
 
 exTree :: Tree Char
-exTree = error "TODO implement exTree"
+exTree = Tree 'd' (Tree 'b' (Leaf 'a') (Leaf 'c')) (Tree 'f' (Leaf 'e') (Leaf 'g'))
 
 -- Exercise C
 -----------------------------------------------------------------------------------------------------------
@@ -59,9 +59,15 @@ exTree = error "TODO implement exTree"
 data Nat = Zero | Succ Nat
          deriving (Show,Eq)
 
+add :: Nat -> Nat -> Nat 
+add Zero n     = n 
+add n Zero     = n 
+add (Succ m) n = Succ (add m n)
+
 mult :: Nat -> Nat -> Nat
-mult Zero n     = error "TODO implement mult"
-mult (Succ m) n = error "TODO implement mult"
+mult Zero n        = Zero
+mult (Succ Zero) n = n 
+mult (Succ m) n    = add n (mult m n)
 
 -- Exercise D
 -----------------------------------------------------------------------------------------------------------
@@ -90,4 +96,4 @@ factors n = error "TODO implement factors"
 -- NOTE using list comprehensions gives a pretty neat solution
 -----------------------------------------------------------------------------------------------------------
 pivot :: Ord a => a -> [a] -> ([a],[a])
-pivot v xs = error "TODO implement pivot"
+pivot v xs = (filter (<= v) xs, filter (> v) xs)
